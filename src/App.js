@@ -9,9 +9,9 @@ function OrderButton({ ascending, onButtonClick }) {
   );
 }
 
-function Square({ value, onSquareClick }) {
+function Square({ value, onSquareClick, winningSquare=false }) {
   return (
-    <button className="square" onClick={onSquareClick}>
+    <button className={winningSquare ? " square winning-square" : "square"} onClick={onSquareClick}>
       {value}
     </button>
   );
@@ -34,7 +34,7 @@ function Board({ xIsNext, squares, onPlay }) {
   const winner = calculateWinner(squares);
   let status;
   if (winner) {
-    status = 'Winner: ' + winner;
+    status = 'Winner: ' + winner[0];
   } else {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
   }
@@ -44,9 +44,10 @@ const boardLength = 3
       const boardSquares = [...Array(boardLength).keys()].map((col) => {
           const i = boardLength*row + col;
           return (
-              <Square 
+              <Square
               key={i}
               value={squares[i]}
+              winningSquare={winner ? winner[1].includes(i) : false}
               onSquareClick={() => handleClick(i)}
               />
           )
@@ -133,7 +134,7 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return [squares[a], lines[i]];
     }
   }
   return null;
