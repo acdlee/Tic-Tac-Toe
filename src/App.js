@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
 
-function OrderButton({ ascend, onButtonClick }) {
+function OrderButton({ ascending, onButtonClick }) {
   return (
     <button onClick={onButtonClick}>
-      {ascend ? (<>Ascend</>) : (<>Descend</>)}
+      {ascending ? (<>Descend</>) : (<>Ascend</>)}
     </button>
   );
 }
@@ -68,16 +68,11 @@ const boardLength = 3
 export default function Game() {
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
-  const [ascending, setAscending] = useState(false);
+  const [ascending, setAscending] = useState(true);
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
 
   function flipOrder() {
-    // console.log(history);
-    // console.log(history.reverse())
-    // let reversed = history.reverse();
-    // console.log(reversed);
-    setHistory(history.reverse());
     setAscending(!ascending);
   }
 
@@ -90,6 +85,7 @@ export default function Game() {
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
   }
+
 
   const moves = history.map((squares, move) => {
     let description;
@@ -111,11 +107,11 @@ export default function Game() {
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
       <div className="game-info">
-        <ol>{moves}</ol>
+        <ol>{ascending ? moves : moves.slice().reverse()}</ol>
       </div>
       <div>
         <OrderButton
-          ascend={ascending} 
+          ascending={ascending} 
           onButtonClick={() => flipOrder()}
         />
       </div>
