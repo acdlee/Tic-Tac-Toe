@@ -66,6 +66,12 @@ const boardLength = 3
   );
 }
 
+// display:
+/*
+  Go to game start
+  Go to move 1: (row, col)
+  Go to move 2: (row, col)
+*/
 export default function Game() {
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
@@ -87,11 +93,29 @@ export default function Game() {
     setCurrentMove(nextMove);
   }
 
+  function findMoveLocation(history, move) {
+    // find the current move
+    let row = 0, col = 0;
+    for (let i = 0; i < 9; i++) {
+      if (history[move][i] !== history[move - 1][i]) {
+        // return when you find the location of the move
+        return [row, col];
+      } else {
+        // update row, col
+        col++;
+        if (col > 2) {
+          col = 0;
+          row++;
+        }
+      }
+    }
+  }
 
   const moves = history.map((squares, move) => {
     let description;
     if (move > 0) {
-      description = 'Go to move #' + move;
+      let [row, col] = findMoveLocation(history, move);
+      description = 'Go to move #' + move + ' (' + row + ', ' + col + ')';
     } else {
       description = 'Go to game start';
     }
